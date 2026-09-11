@@ -2,3 +2,29 @@
     margin: 0px;
     padding: 0px;
 }
+
+body {
+    background-color: black;
+    color: white;
+}
+
+#Pokebola {
+    width: 200px;
+    height: 200px;
+}
+
+.ImgTitulo {
+    display: flex;
+    flex-direction: row;
+}
+
+#titulo {
+    padding-top: 80px;
+    padding-left: 10px;
+}
+
+#fraseTitulo {
+    font-size: 25px;
+    padding-top: 150px;
+    padding-left: 40px;
+}
