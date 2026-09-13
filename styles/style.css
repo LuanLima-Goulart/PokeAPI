@@ -28,3 +28,17 @@ body {
     padding-top: 150px;
     padding-left: 40px;
 }
+
+.pokemon-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: white;
+}
+
+.pokemon-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.modal-content {
+    color: black;
+}
