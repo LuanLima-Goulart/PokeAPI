@@ -1,4 +1,7 @@
 let pokemonsData = [];
+let pokemonsAtuais = [];
+let paginaAtual = 1;
+const itensPorPagina = 12;
 
 async function pokemons() {
     try {
@@ -19,7 +22,9 @@ async function pokemons() {
 
         pokemonsData = await Promise.all(infoPokemons);
 
-        renderPokedex(pokemonsData);
+        pokemonsAtuais = pokemonsData;
+        renderPokedex(pokemonsAtuais);
+
     } catch (error) {
         console.error("Erro ao carregar a Pokédex:", error);
         alert("Não foi possível carregar os Pokémons, tente novamente mais tarde!");
@@ -30,29 +35,50 @@ function renderPokedex(pokemons) {
     const grid = document.getElementById("pokedex-grid");
     grid.innerHTML = "";
 
-    if (pokemons.length === 0) {
+    const paginacaoDiv = document.querySelector(".d-flex.justify-content-center");
+
+    const inicio = (paginaAtual - 1) * itensPorPagina;
+    const fim = inicio + itensPorPagina;
+    const pokemonsDaPagina = pokemons.slice(inicio, fim);
+
+    if (pokemonsDaPagina.length === 0) {
         grid.innerHTML = `
             <div class="col-12 text-center mt-5">
                 <h3 class="text-danger fw-bold">Nenhum pokémon encontrado</h3>
             </div>
         `;
+        if (paginacaoDiv) paginacaoDiv.style.display = "none";
         return;
     }
 
-    pokemons.forEach((poke, index) => {
+    if (paginacaoDiv) paginacaoDiv.style.display = "flex";
+
+    pokemonsDaPagina.forEach((poke) => {
         const col = document.createElement("div");
         col.className = "col-12 col-sm-6 col-md-4 col-lg-3 mb-4";
-
         col.innerHTML = `<div class="card h-100 text-center pokemon-card" style="cursor: pointer;" onclick="abrirModal('${poke.name}')">
                 <img src="${poke.sprites.other["official-artwork"].front_default}" class="card-img-top mx-auto" alt="${poke.name}" style="width: 120px;">
                 <div class="card-body">
                     <h5 class="card-title text-capitalize">${poke.name}</h5>
                 </div>
-            </div>`
-
+            </div>`;
         grid.appendChild(col);
     });
 
+    const totalPaginas = Math.ceil(pokemons.length / itensPorPagina);
+    document.getElementById("btnPaginas").innerText = `Página ${paginaAtual} de ${totalPaginas}`;
+
+    const listaPaginas = document.getElementById("listaPaginas");
+
+    listaPaginas.innerHTML = "";
+
+    for (let contador = 1; contador <= totalPaginas; contador++) {
+        const ativo = contador === paginaAtual ? "active" : "";
+        listaPaginas.innerHTML += `<li><a class="dropdown-item ${ativo}" onclick="irParaPagina(${contador})">Página ${contador}</a></li>`;
+    }
+
+    document.getElementById("btnAnterior").disabled = paginaAtual === 1;
+    document.getElementById("btnProximo").disabled = paginaAtual >= totalPaginas;
 }
 
 function abrirModal(nome) {
@@ -92,17 +118,17 @@ function aplicarFiltros() {
     const textoBusca = buscaInput.value.toLowerCase();
     const opcaoOrdem = sortSelect.value;
 
-    let pokemonsFiltrados = pokemonsData.filter(poke => 
-        poke.name.toLowerCase().includes(textoBusca)
+    let pokemonsFiltrados = pokemonsData.filter(poke =>
+        poke.name.toLowerCase().startsWith(textoBusca)
     );
 
     if (opcaoOrdem === "az") {
         pokemonsFiltrados.sort((a, b) => a.name.localeCompare(b.name));
-    } 
+    }
     else if (opcaoOrdem !== "") {
         const partes = opcaoOrdem.split("_");
-        const statName = partes[0]; 
-        const ordem = partes[1];    
+        const statName = partes[0];
+        const ordem = partes[1];
 
         pokemonsFiltrados.sort((a, b) => {
             const valorA = a.stats.find(s => s.stat.name === statName).base_stat;
@@ -115,8 +141,19 @@ function aplicarFiltros() {
             }
         });
     }
+    pokemonsAtuais = pokemonsFiltrados;
+    paginaAtual = 1;
+    renderPokedex(pokemonsAtuais);
+}
 
-    renderPokedex(pokemonsFiltrados);
+function mudarPagina(direcao) {
+    paginaAtual += direcao;
+    renderPokedex(pokemonsAtuais);
+}
+
+function irParaPagina(numeroPagina) {
+    paginaAtual = numeroPagina;
+    renderPokedex(pokemonsAtuais);
 }
 
 pokemons();

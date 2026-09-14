@@ -46,6 +46,19 @@
 
         <div class="row" id="pokedex-grid">
         </div>
+
+        <div class="d-flex justify-content-center gap-3 mt-4 mb-5">
+            <button id="btnAnterior" class="btn btn-danger" onclick="mudarPagina(-1)">&#8592; Anterior</button>
+            <div class="dropdown align-self-center">
+                <button class="btn btn-dark dropdown-toggle fw-bold" type="button" id="btnPaginas"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    Página 1
+                </button>
+                <ul class="dropdown-menu text-center" id="listaPaginas" aria-labelledby="btnPaginas">
+                </ul>
+            </div>
+            <button id="btnProximo" class="btn btn-danger" onclick="mudarPagina(1)">Próxima &#8594;</button>
+        </div>
     </main>
 
     <div class="modal fade" id="pokemonModal" tabindex="-1" aria-hidden="true">

@@ -42,3 +42,12 @@ body {
 .modal-content {
     color: black;
 }
+
+#listaPaginas {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+#listaPaginas li {
+    cursor: pointer;
+}
